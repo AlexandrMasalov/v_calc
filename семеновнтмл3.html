@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Расчет вероятности</title>
+	<style>
+		/* Базовый стиль */
+		body {
+			font-weight: 900;
+			font-size: 1.5em;
+			background-color: #e9f5e9;
+			color: #2f4f2f;
+			margin: 0;
+			padding: 20px;
+		}
+		h2 {
+			font-size: 1.5em;
+			color: #2f4f2f;
+			text-align: center;
+		}
+		h4 {
+			font-size: 1.1em;
+			color: #2f4f2f;
+			text-align: center;
+			margin-bottom: 0;
+		}
+		.block-input {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: start;
+		}
+		.block-input_down {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+			align-items: start;
+		}
+		.input {
+			max-width: 148px;
+			width: 20%;
+			margin: 1em 4px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			gap: 0.5em;
+		}
+		input {
+			width: 136px;
+			height: 1.5em;
+			font-size: 0.6em;
+			border: 2px solid #76b476;
+			background-color: #f0f9f0;
+			color: #2f4f2f;
+			border-radius: 8px;
+			padding: 0.5em;
+			appearance: textfield;
+		}
+		input[type="number"] {
+			-moz-appearance: textfield; /* Для Firefox */
+		}
+		input[type="number"]::-webkit-inner-spin-button,
+		input[type="number"]::-webkit-outer-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+		button {
+			font-size: 0.6em;
+		}
+		label {
+			display: block;
+			font-size: 0.7em;
+			text-align: center;
+			width: 136px;
+		}
+		.button_calculate, #button_remove {
+			width: 90%;
+			max-width: 320px;
+			padding: 1em;
+			font-size: 1em;
+			color: #ffffff;
+			background-color: #4caf50;
+			border: none;
+			border-radius: 10px;
+			cursor: pointer;
+			position: relative;
+			overflow: hidden;
+			margin: 0.5em auto;
+			display: block;
+			transition: transform 0.1s ease;
+		}
+		.button_calculate:active, #button_remove:active {
+			transform: scale(0.95);
+		}
+		.button_calculate:hover {
+			background-color: #43a047;
+		}
+		#button_remove {
+			background-color: #388e3c;
+			visibility: hidden;
+		}
+		#button_remove:hover {
+			background-color: #2e7d32;
+		}
+		.result {
+			margin: 1em;
+			font-size: 1.1em;
+			text-align: center;
+		}
+		p {
+			color: #2f4f2f;
+			font-size: 0.8em;
+			text-align: center;
+		}
+		span {
+			background-color: #76b476;
+			color: #ffffff;
+			padding: 0.3em;
+			border-radius: 5px;
+		}
+		.span_red {
+			background-color: #eb7355;
+			color: #ffffff;
+		}
+		/* Анимация взрыва */
+		.explosion-circle {
+			position: absolute;
+			border-radius: 50%;
+			background-color: rgba(255, 0, 0, 0.7);
+			animation: explode 0.6s ease-out forwards;
+			pointer-events: none;
+		}
+		@keyframes explode {
+			0% {
+				width: 10px;
+				height: 10px;
+				opacity: 1;
+				transform: translate(-50%, -50%) scale(1);
+			}
+			100% {
+				width: 200px;
+				height: 200px;
+				opacity: 0;
+				transform: translate(-50%, -50%) scale(3);
+			}
+		}
+		/* Адаптация для мобильных устройств */
+		@media (max-width: 768px) {
+			body {
+				font-size: 1.5em;
+			}
+			input {
+				width: 90%;
+				max-width: none;
+				height: 2em;
+			}
+			.button_calculate, #button_remove {
+				width: 100%;
+				padding: 0.8em;
+			}
+			label {
+				width: 108px;
+			}
+		}
+		/* Адаптация для очень маленьких экранов (например, 320px) */
+		@media (max-width: 480px) {
+			body {
+				font-size: 1.2em;
+			}
+			.input, .result {
+				font-size: 0.9em;
+			}
+			button, input {
+				font-size: 0.9em;
+			}
+			label {
+				width: 82px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<h2>Калькулятор расчета времени, необходимого для смены позиций выставленными наряди</h2>
+
+	<div class="calc-block">
+		<h4>Введите данные для определения критического времени при смене позиций (T<sub>крит</sub>)</h4>
+		<biv class="block-input">
+
+			<div class="input">
+				<input type="number" id="D" name="your_input_name">
+				<label for="D">
+					D<br/>удаление своих позиций от рубежа обозначения Гг, км
+				</label>
+			</div>
+
+			<div class="input">
+				<input type="number" id="d" name="your_input_name">
+				<label for="d">d<br/>дальность огня средств поражения противника, км</label>
+			</div>
+
+			<div class="input">
+				<input type="number" id="V_prot" name="your_input_name">
+				<label for="V_prot">V<sub>прот</sub><br/>темп движения противника, км/ч</label>
+			</div>
+
+			<div class="input">
+				<input type="number" id="V_svoi" name="your_input_name">
+				<label for="V_svoi">V<sub>своих</sub><br/>темп движения противника, км/ч</label>
+			</div>
+		</biv>
+	</div>
+	<div class="calc-block">
+		<h4>Введите данные для расчета времени, необходимого для действий своих сил при смене позиций</h4>
+		<biv class="block-input_down">
+
+			<div class="input">
+				<input type="number" id="Ro" name="your_input_name">
+				<label for="Ro">D<sub>нов</sub><br/>удаление до новых позиций, км</label>
+			</div>
+
+			<div class="input">
+				<input type="number" id="t_1" name="your_input_name">
+				<label for="t_1">t<sub>1</sub><br/>время свертывания, мин</label>
+			</div>
+
+			<div class="input">
+				<input type="number" id="t_2" name="your_input_name">
+				<label for="t_2">t<sub>2</sub><br/>время развертывания, мин</div>
+				</div>
+
+			</biv>
+		</div>
+
+	<button class="button_calculate" onclick="calculate()">Рассчитать время</button>
+	<h3 id="result" class="result"></h3>
+	<button tabindex="-1" id="button_remove" onclick="remove()">Удалить значения</button>
+	<script>
+		function calculate() {
+			createExplosion(event);
+			const $D = Number(document.getElementById("D").value.replace(",", "."));
+			const $d = Number(document.getElementById("d").value.replace(",", "."));
+			const $V_prot = Number(document.getElementById("V_prot").value.replace(",", "."));
+			const $V_svoi = Number(document.getElementById("V_svoi").value.replace(",", "."));
+			const $Ro = Number(document.getElementById("Ro").value.replace(",", "."));
+			const $t_1 = Number(document.getElementById("t_1").value.replace(",", "."));
+			const $t_2 = Number(document.getElementById("t_2").value.replace(",", "."));
+			if ($D && $d && $V_prot && $V_svoi && $Ro && $t_1 && $t_2) {
+				let t_smen = Number($t_1 + $t_2);
+				let Dd = $D - $d;
+				let tCrit = ((Dd / $V_prot) - (Dd / $V_svoi)) * 60 - t_smen;
+				let result = 60 * $Ro / $V_svoi + t_smen;
+				if (tCrit > result) {
+					document.getElementById("result").innerHTML = `Запас времени составляет - <span>${(tCrit - result).toFixed(0)}</span> мин`;
+				} else if (tCrit < result) {
+					document.getElementById("result").innerHTML = `Нехватает - <span>${(result - tCrit).toFixed(0)}</span> мин`;
+					document.querySelector("span").classList.add("span_red");
+				} else {
+					document.getElementById("result").innerHTML = `Запаса времени нет`;
+				}
+				document.getElementById("button_remove").style.visibility = "visible";
+			} else {
+				document.getElementById("result").innerHTML = `Для расчета необходимо ввести все значения`;
+			}
+		}
+		function remove() {
+			document.querySelector("span").classList.remove("span_red");
+			document.getElementById("result").innerHTML = "";
+			document.body.style.background = "";
+			document.getElementById("D").value = "";
+			document.getElementById("d").value = "";
+			document.getElementById("V_prot").value = "";
+			document.getElementById("V_svoi").value = "";
+			document.getElementById("Ro").value = "";
+			document.getElementById("t_1").value = "";
+			document.getElementById("t_2").value = "";
+			document.getElementById("button_remove").style.visibility = "hidden";
+		}
+		/* Функция для создания эффекта взрыва */
+		function createExplosion(event) {
+			const button = event.currentTarget;
+			for (let i = 0; i < 5; i++) {
+				const circle = document.createElement("div");
+				circle.classList.add("explosion-circle");
+				circle.style.top = `${event.offsetY}px`;
+				circle.style.left = `${event.offsetX}px`;
+				button.appendChild(circle);
+				circle.addEventListener("animationend", () => circle.remove());
+			}
+		}
+	</script>
+</body>
+</html>
