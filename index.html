@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Расчет вероятности</title>
+	<title>Расчет времени</title>
 	<style>
 		/* Базовый стиль */
 		body {
@@ -280,11 +280,19 @@
 			var button = event.currentTarget;
 			for (var i = 0; i < 5; i++) {
 				var circle = document.createElement("div");
-				circle.classList.add("explosion-circle");
-				circle.style.top = `${event.offsetY}px`;
-				circle.style.left = `${event.offsetX}px`;
+				circle.className = "explosion-circle";
+				circle.style.top = event.offsetY + "px";
+				circle.style.left = event.offsetX + "px";
 				button.appendChild(circle);
-				circle.addEventListener("animationend", () => circle.remove());
+				if (circle.addEventListener) {
+					circle.addEventListener("animationend", function() {
+						circle.remove()
+					});
+				} else if (circle.attachEvent) {
+					circle.attachEvent("onanimationend", function() {
+            circle.parentNode.removeChild(circle);
+          });
+				}
 			}
 		}
 	</script>
