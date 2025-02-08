@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Расчет вероятности</title>
 	<style>
@@ -93,7 +94,7 @@
 		}
 		#button_remove {
 			background-color: #388e3c;
-			visibility: hidden;
+			display: none;
 		}
 		#button_remove:hover {
 			background-color: #2e7d32;
@@ -180,7 +181,7 @@
 
 	<div class="calc-block">
 		<h4>Введите данные для определения критического времени при смене позиций (T<sub>крит</sub>)</h4>
-		<biv class="block-input">
+		<div class="block-input">
 
 			<div class="input">
 				<input type="number" id="D" name="your_input_name">
@@ -203,11 +204,11 @@
 				<input type="number" id="V_svoi" name="your_input_name">
 				<label for="V_svoi">V<sub>своих</sub><br/>темп движения своих сил, км/ч</label>
 			</div>
-		</biv>
+		</div>
 	</div>
 	<div class="calc-block">
 		<h4>Введите данные для расчета времени, необходимого для действий своих сил при смене позиций</h4>
-		<biv class="block-input">
+		<div class="block-input">
 
 			<div class="input">
 				<input type="number" id="Ro" name="your_input_name">
@@ -224,36 +225,39 @@
 				<label for="t_2">t<sub>2</sub><br/>время развертывания, мин</div>
 				</div>
 
-			</biv>
+			</div>
 		</div>
 
-	<button class="button_calculate" onclick="calculate()">Рассчитать время</button>
+	<button type="button" class="button_calculate" onclick="calculate()">Рассчитать время</button>
 	<h3 id="result" class="result"></h3>
-	<button tabindex="-1" id="button_remove" onclick="remove()">Удалить значения</button>
+	<button type="button" tabindex="-1" id="button_remove" onclick="remove()">Удалить значения</button>
 	<script>
 		function calculate() {
 			createExplosion(event);
-			const $D = Number(document.getElementById("D").value.replace(",", "."));
-			const $d = Number(document.getElementById("d").value.replace(",", "."));
-			const $V_prot = Number(document.getElementById("V_prot").value.replace(",", "."));
-			const $V_svoi = Number(document.getElementById("V_svoi").value.replace(",", "."));
-			const $Ro = Number(document.getElementById("Ro").value.replace(",", "."));
-			const $t_1 = Number(document.getElementById("t_1").value.replace(",", "."));
-			const $t_2 = Number(document.getElementById("t_2").value.replace(",", "."));
+			var $D = parseFloat(document.getElementById("D").value.replace(",", ".")) || 0;
+			var $d = parseFloat(document.getElementById("d").value.replace(",", ".")) || 0;
+			var $V_prot = parseFloat(document.getElementById("V_prot").value.replace(",", ".")) || 0;
+			var $V_svoi = parseFloat(document.getElementById("V_svoi").value.replace(",", ".")) || 0;
+			var $Ro = parseFloat(document.getElementById("Ro").value.replace(",", ".")) || 0;
+			var $t_1 = parseFloat(document.getElementById("t_1").value.replace(",", ".")) || 0;
+			var $t_2 = parseFloat(document.getElementById("t_2").value.replace(",", ".")) || 0;
 			if ($D && $d && $V_prot && $V_svoi && $Ro && $t_1 && $t_2) {
-				let t_smen = Number($t_1 + $t_2);
-				let Dd = $D - $d;
-				let tCrit = ((Dd / $V_prot) - (Dd / $V_svoi)) * 60 - t_smen;
-				let result = 60 * $Ro / $V_svoi + t_smen;
+				var t_smen = Number($t_1 + $t_2);
+				var Dd = $D - $d;
+				var tCrit = ((Dd / $V_prot) - (Dd / $V_svoi)) * 60 - t_smen;
+				var result = 60 * $Ro / $V_svoi + t_smen;
 				if (tCrit > result) {
-					document.getElementById("result").innerHTML = `Запас времени составляет - <span>${(tCrit - result).toFixed(0)}</span> мин`;
+					console.log("Запас времени составляет - ", result - tCrit, "мин");
+					document.getElementById("result").innerHTML = `Запас времени составляет - <span>${Math.round(tCrit - result)}</span> мин`;
 				} else if (tCrit < result) {
-					document.getElementById("result").innerHTML = `Нехватает - <span>${(result - tCrit).toFixed(0)}</span> мин`;
+					console.log("Не хватает", result - tCrit, "мин");
+					document.getElementById("result").innerHTML = `Не хватает - <span>${Math.round(result - tCrit)}</span> мин`;
 					document.querySelector("span").classList.add("span_red");
 				} else {
+					console.log("Запаса времени нет");
 					document.getElementById("result").innerHTML = `Запаса времени нет`;
 				}
-				document.getElementById("button_remove").style.visibility = "visible";
+				document.getElementById("button_remove").style.display = "block";
 			} else {
 				document.getElementById("result").innerHTML = `Для расчета необходимо ввести все значения`;
 			}
@@ -269,13 +273,13 @@
 			document.getElementById("Ro").value = "";
 			document.getElementById("t_1").value = "";
 			document.getElementById("t_2").value = "";
-			document.getElementById("button_remove").style.visibility = "hidden";
+			document.getElementById("button_remove").style.display = "none";
 		}
 		/* Функция для создания эффекта взрыва */
 		function createExplosion(event) {
-			const button = event.currentTarget;
-			for (let i = 0; i < 5; i++) {
-				const circle = document.createElement("div");
+			var button = event.currentTarget;
+			for (var i = 0; i < 5; i++) {
+				var circle = document.createElement("div");
 				circle.classList.add("explosion-circle");
 				circle.style.top = `${event.offsetY}px`;
 				circle.style.left = `${event.offsetX}px`;
