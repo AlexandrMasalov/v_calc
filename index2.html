@@ -215,7 +215,7 @@
 			var $V_prot = parseFloat(document.getElementById("V_prot").value.replace(",", ".")) || 0;
 			var $V_svoi = parseFloat(document.getElementById("V_svoi").value.replace(",", ".")) || 0;
 			if ($D && $V_prot && $V_svoi) {
-				var tProbability = $D / ($V_svoi + $V_prot);
+				var tProbability = $D / ($V_svoi + $V_prot) * 60;
 				var distance = $V_svoi * tProbability;
 				console.log("Ожидаемое время встречи с противником - ", tProbability);
 				document.getElementById("tProbability").innerHTML = `Ожидаемое время встречи с противником - <span>${Math.round(tProbability)}</span> мин`;
