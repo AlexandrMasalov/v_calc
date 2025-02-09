@@ -211,7 +211,7 @@
 	<script>
 		function calculate() {
 			console.log("document.all", Boolean(document.all));
-			if (!Boolean(document.all) && document.addEventListener) {
+			if (!Boolean(document.all)) {
 			createExplosion(event);
 			}
 			var $D = parseFloat(document.getElementById("D").value.replace(",", ".")) || 0;
