@@ -210,10 +210,7 @@
 	<button type="button" tabindex="-1" id="button_remove" onclick="remove()">Удалить значения</button>
 	<script>
 		function calculate() {
-			console.log("document.all", Boolean(document.all));
-			if (!Boolean(document.all)) {
 			createExplosion(event);
-			}
 			var $D = parseFloat(document.getElementById("D").value.replace(",", ".")) || 0;
 			var $V_prot = parseFloat(document.getElementById("V_prot").value.replace(",", ".")) || 0;
 			var $V_svoi = parseFloat(document.getElementById("V_svoi").value.replace(",", ".")) || 0;
