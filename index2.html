@@ -221,7 +221,7 @@
 				var distance = $V_svoi * tProbability;
 				console.log("Ожидаемое время встречи с противником - ", tProbability);
 				document.getElementById("tProbability").innerHTML = `Ожидаемое время встречи с противником - <span>${hours}</span> час. <span>${Math.round(minutes)}</span> мин`;
-				console.log("Удаление вероятного рубежа встречи с противником - ", tProbability);
+				console.log("Удаление вероятного рубежа встречи с противником - ", distance);
 				document.getElementById("distance").innerHTML = `Удаление вероятного рубежа встречи с противником - <span>${distance}</span> км`;
 				document.getElementById("button_remove").style.display = "block";
 			} else {
