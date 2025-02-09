@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Расчет времени</title>
+	<style>
+		/* Базовый стиль */
+		body {
+			font-weight: 900;
+			font-size: 1.5em;
+			background-color: #e9f5e9;
+			color: #2f4f2f;
+			margin: 0;
+			padding: 20px;
+		}
+		h2 {
+			font-size: 1.5em;
+			color: #2f4f2f;
+			text-align: center;
+		}
+		h4 {
+			font-size: 1.1em;
+			color: #2f4f2f;
+			text-align: center;
+			margin-bottom: 0;
+		}
+		.block-input {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+			align-items: start;
+		}
+		.input {
+			max-width: 148px;
+			width: 20%;
+			margin: 1em 4px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			gap: 0.5em;
+		}
+		input {
+			width: 136px;
+			height: 1.5em;
+			font-size: 0.6em;
+			border: 2px solid #76b476;
+			background-color: #f0f9f0;
+			color: #2f4f2f;
+			border-radius: 8px;
+			padding: 0.5em;
+			appearance: textfield;
+		}
+		input[type="number"] {
+			-moz-appearance: textfield; /* Для Firefox */
+		}
+		input[type="number"]::-webkit-inner-spin-button,
+		input[type="number"]::-webkit-outer-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+		button {
+			font-size: 0.6em;
+		}
+		label {
+			display: block;
+			font-size: 0.7em;
+			text-align: center;
+			width: 136px;
+		}
+		.button_calculate, #button_remove {
+			width: 90%;
+			max-width: 320px;
+			padding: 1em;
+			font-size: 1em;
+			color: #ffffff;
+			background-color: #4caf50;
+			border: none;
+			border-radius: 10px;
+			cursor: pointer;
+			position: relative;
+			overflow: hidden;
+			margin: 0.5em auto;
+			display: block;
+			transition: transform 0.1s ease;
+		}
+		.button_calculate:active, #button_remove:active {
+			transform: scale(0.95);
+		}
+		.button_calculate:hover {
+			background-color: #43a047;
+		}
+		#button_remove {
+			background-color: #388e3c;
+			display: none;
+		}
+		#button_remove:hover {
+			background-color: #2e7d32;
+		}
+		.tProbability,
+		.distance {
+			margin: 1em;
+			font-size: 1.1em;
+			text-align: center;
+		}
+		p {
+			color: #2f4f2f;
+			font-size: 0.8em;
+			text-align: center;
+		}
+		span {
+			background-color: #76b476;
+			color: #ffffff;
+			padding: 0.3em;
+			border-radius: 5px;
+		}
+		.span_red {
+			background-color: #eb7355;
+			color: #ffffff;
+		}
+		/* Анимация взрыва */
+		.explosion-circle {
+			position: absolute;
+			border-radius: 50%;
+			background-color: rgba(255, 0, 0, 0.7);
+			animation: explode 0.6s ease-out forwards;
+			pointer-events: none;
+		}
+		@keyframes explode {
+			0% {
+				width: 10px;
+				height: 10px;
+				opacity: 1;
+				transform: translate(-50%, -50%) scale(1);
+			}
+			100% {
+				width: 200px;
+				height: 200px;
+				opacity: 0;
+				transform: translate(-50%, -50%) scale(3);
+			}
+		}
+		/* Адаптация для мобильных устройств */
+		@media (max-width: 768px) {
+			body {
+				font-size: 1.5em;
+			}
+			input {
+				width: 90%;
+				max-width: none;
+				height: 2em;
+			}
+			.button_calculate, #button_remove {
+				width: 100%;
+				padding: 0.8em;
+			}
+			label {
+				width: 108px;
+			}
+		}
+		/* Адаптация для очень маленьких экранов (например, 320px) */
+		@media (max-width: 480px) {
+			body {
+				font-size: 1.2em;
+			}
+			.input, .result {
+				font-size: 0.9em;
+			}
+			button, input {
+				font-size: 0.9em;
+			}
+			label {
+				width: 82px;
+			}
+		}
+	</style>
+</head>
+<body>
+	<h2>Калькулятор расчета ожидаемого времени встречи и удаления ожидаемого рубежа встречи с противником для подразделений ПУ</h2>
+
+	<div class="calc-block">
+		<h4>Введите данные</h4>
+		<div class="block-input">
+
+			<div class="input">
+				<input type="number" id="D" name="your_input_name">
+				<label for="D">
+					D<br/>расстояние от ПУ до рубежа прикрытия ГГ, км
+				</label>
+			</div>
+
+			<div class="input">
+				<input type="number" id="V_svoi" name="your_input_name">
+				<label for="V_svoi">V<sub>своих</sub><br/>темп движения своих сил и средств, км/ч</label>
+			</div>
+
+			<div class="input">
+				<input type="number" id="V_prot" name="your_input_name">
+				<label for="V_prot">V<sub>прот</sub><br/>темп движения сил и средств противника, км/ч</label>
+			</div>
+
+		</div>
+	</div>
+
+	<button type="button" class="button_calculate" onclick="calculate()">Рассчитать время</button>
+	<h3 id="tProbability" class="tProbability"></h3>
+	<h3 id="distance" class="distance"></h3>
+	<button type="button" tabindex="-1" id="button_remove" onclick="remove()">Удалить значения</button>
+	<script>
+		function calculate() {
+			createExplosion(event);
+			var $D = parseFloat(document.getElementById("D").value.replace(",", ".")) || 0;
+			var $V_prot = parseFloat(document.getElementById("V_prot").value.replace(",", ".")) || 0;
+			var $V_svoi = parseFloat(document.getElementById("V_svoi").value.replace(",", ".")) || 0;
+			if ($D && $V_prot && $V_svoi) {
+				var tProbability = $D / ($V_svoi + $V_prot);
+				var distance = $V_svoi * tProbability;
+				console.log("Ожидаемое время встречи с противником - ", tProbability);
+				document.getElementById("tProbability").innerHTML = `Ожидаемое время встречи с противником - <span>${Math.round(tProbability)}</span> мин`;
+				document.getElementById("distance").innerHTML = `Удаление вероятного рубежа встречи с противником - <span>${Math.round(distance)}</span> км`;
+				document.getElementById("button_remove").style.display = "block";
+			} else {
+				document.getElementById("result").innerHTML = `Для расчета необходимо ввести все значения`;
+			}
+		}
+		function remove() {
+			document.querySelector("span").classList.remove("span_red");
+			document.getElementById("tProbability").innerHTML = "";
+			document.getElementById("distance").innerHTML = "";
+			document.body.style.background = "";
+			document.getElementById("D").value = "";
+			document.getElementById("V_prot").value = "";
+			document.getElementById("V_svoi").value = "";
+			document.getElementById("button_remove").style.display = "none";
+		}
+		/* Функция для создания эффекта взрыва */
+		function createExplosion(event) {
+			var button = event.currentTarget;
+			for (var i = 0; i < 5; i++) {
+				var circle = document.createElement("div");
+				circle.className = "explosion-circle";
+				circle.style.top = event.offsetY + "px";
+				circle.style.left = event.offsetX + "px";
+				button.appendChild(circle);
+				if (circle.addEventListener) {
+					circle.addEventListener("animationend", function() {
+						circle.remove()
+					});
+				} else if (circle.attachEvent) {
+					circle.attachEvent("onanimationend", function() {
+            circle.parentNode.removeChild(circle);
+          });
+				}
+			}
+		}
+	</script>
+</body>
+</html>
