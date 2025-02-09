@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Расчет вероятности</title>
+	<style>
+		/* Базовый стиль */
+		body {
+			font-weight: 900;
+			font-size: 2em;
+			background-color: #e9f5e9;
+			color: #2f4f2f;
+			margin: 0;
+			padding: 20px;
+		}
+		h2, h3 {
+			font-size: 1.5em;
+			color: #2f4f2f;
+			text-align: center;
+		}
+		input {
+			width: 80%;
+			max-width: 300px;
+			height: 2.5em;
+			font-size: 1em;
+			border: 2px solid #76b476;
+			background-color: #f0f9f0;
+			color: #2f4f2f;
+			border-radius: 8px;
+			padding: 0.5em;
+		}
+		.input {
+			margin: 1em auto;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 0.5em;
+		}
+		button {
+			font-size: 1em;
+		}
+		.button_calculate, #button_remove {
+			width: 90%;
+			max-width: 320px;
+			padding: 1em;
+			font-size: 1em;
+			color: #ffffff;
+			background-color: #4caf50;
+			border: none;
+			border-radius: 10px;
+			cursor: pointer;
+			position: relative;
+			overflow: hidden;
+			margin: 0.5em auto;
+			display: block;
+			transition: transform 0.1s ease;
+		}
+		.button_calculate:active, #button_remove:active {
+			transform: scale(0.95);
+		}
+		.button_calculate:hover {
+			background-color: #43a047;
+		}
+		#button_remove {
+			background-color: #388e3c;
+			visibility: hidden;
+		}
+		#button_remove:hover {
+			background-color: #2e7d32;
+		}
+		.result {
+			margin: 1em;
+			font-size: 1.1em;
+			text-align: center;
+		}
+		p {
+			color: #2f4f2f;
+			font-size: 1em;
+			text-align: center;
+		}
+		span {
+			background-color: #76b476;
+			color: #ffffff;
+			padding: 0.3em;
+			border-radius: 5px;
+		}
+		/* Анимация взрыва */
+		.explosion-circle {
+			position: absolute;
+			border-radius: 50%;
+			background-color: rgba(255, 0, 0, 0.7);
+			animation: explode 0.6s ease-out forwards;
+			pointer-events: none;
+		}
+		@keyframes explode {
+			0% {
+				width: 10px;
+				height: 10px;
+				opacity: 1;
+				transform: translate(-50%, -50%) scale(1);
+			}
+			100% {
+				width: 200px;
+				height: 200px;
+				opacity: 0;
+				transform: translate(-50%, -50%) scale(3);
+			}
+		}
+		/* Адаптация для мобильных устройств */
+		@media (max-width: 768px) {
+			body {
+				font-size: 1.5em;
+			}
+			h2, h3 {
+				font-size: 1.2em;
+			}
+			input {
+				width: 90%;
+				max-width: none;
+				height: 2em;
+			}
+			.button_calculate, #button_remove {
+				width: 100%;
+				padding: 0.8em;
+			}
+		}
+		/* Адаптация для очень маленьких экранов (например, 320px) */
+		@media (max-width: 480px) {
+			body {
+				font-size: 1.2em;
+			}
+			h2, h3 {
+				font-size: 1em;
+			}
+			.input, .result {
+				font-size: 0.9em;
+			}
+			button, input {
+				font-size: 0.9em;
+			}
+		}
+	</style>
+</head>
+<body>
+	<h2>Калькулятор расчета вероятности обстрела каждой появившейся цели</h2>
+	<p><sup>*</sup>дробные значения вводятся через "." (точку)</p>
+	<div class="input">
+		<label for="lambda">Введите значения &#x03bb; для расчета: </label>
+		<input type="text" id="lambda" name="your_input_name">
+		<button tabindex="-1" onclick="(function() {document.getElementById('lambda').value = ''})()">X</button>
+	</div>
+	<p>&#x03bb; - вероятность появления целей в единицу времени в наблюдаемой полосе</p>
+	<div class="input">
+		<label for="mu_1">Введите значения &#x03bc;<sub>1</sub> для расчета: </label>
+		<input type="text" id="mu_1" name="mu_1">
+		<button tabindex="-1" onclick="(function() {document.getElementById('mu_1').value = ''})()">X</button>
+	</div>
+	<p>&#x03bc;<sub>1</sub> - возможность обнаружения целей в единицу времени в наблюдаемой полосе</p>
+	<div class="input">
+		<label for="mu_2">Введите значения &#x03bc;<sub>2</sub> для расчета: </label>
+		<input type="text" id="mu_2" name="mu_2">
+		<button tabindex="-1" onclick="(function() {document.getElementById('mu_2').value = ''})()">X</button>
+	</div>
+	<p>&#x03bc;<sub>2</sub> - возможность обработки информации и планирования огня огневых средств в единицу времени по наблюдаемым целям</p>
+	<button class="button_calculate" onclick="calculate()">Рассчитать вероятность</button>
+	<h3 id="result" class="result"></h3>
+	<button tabindex="-1" id="button_remove" onclick="remove()">Удалить значения</button>
+	<script>
+		function calculate() {
+			createExplosion(event);
+			const $lambda = Number(document.getElementById("lambda").value);
+			const $mu_1 = Number(document.getElementById("mu_1").value);
+			const $mu_2 = Number(document.getElementById("mu_2").value);
+			if ($lambda && $mu_1 && $mu_2) {
+				let result = ($mu_2 * $mu_1 * ($mu_1 + $mu_2 + $lambda)) / (($mu_1 + $lambda) * ($mu_2 + $lambda) * ($mu_1 + $mu_2));
+				document.getElementById("result").innerHTML = `Вероятность обстрела каждой появившейся цели составляет - <span>${result.toFixed(2)}</span>`;
+				document.getElementsByTagName("span")[0].style.backgroundColor = "#76b476";
+				let resultColor = result >= 0.5 ? "#7eeb83" : "#ff5858";
+				document.body.style.background = resultColor;
+				document.getElementById("button_remove").style.visibility = "visible";
+			} else {
+				document.getElementById("result").innerHTML = `Для расчета необходимо ввести все значения`;
+			}
+		}
+		function remove() {
+			document.getElementById("result").innerHTML = "";
+			document.body.style.background = "";
+			document.getElementById("lambda").value = "";
+			document.getElementById("mu_1").value = "";
+			document.getElementById("mu_2").value = "";
+			document.getElementById("button_remove").style.visibility = "hidden";
+		}
+		/* Функция для создания эффекта взрыва */
+		function createExplosion(event) {
+			const button = event.currentTarget;
+			for (let i = 0; i < 5; i++) {
+				const circle = document.createElement("div");
+				circle.classList.add("explosion-circle");
+				circle.style.top = `${event.offsetY}px`;
+				circle.style.left = `${event.offsetX}px`;
+				button.appendChild(circle);
+				circle.addEventListener("animationend", () => circle.remove());
+			}
+		}
+	</script>
+</body>
+</html>
