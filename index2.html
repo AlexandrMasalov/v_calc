@@ -210,9 +210,8 @@
 	<button type="button" tabindex="-1" id="button_remove" onclick="remove()">Удалить значения</button>
 	<script>
 		function calculate() {
-			console.log("document.all", document.all);
-			console.log("window.msCrypto", window.msCrypto);
-			if (!document.all && !window.msCrypto) {
+			console.log("document.all", Boolean(document.all));
+			if (!Boolean(document.all) && document.addEventListener) {
 			createExplosion(event);
 			}
 			var $D = parseFloat(document.getElementById("D").value.replace(",", ".")) || 0;
