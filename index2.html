@@ -210,6 +210,8 @@
 	<button type="button" tabindex="-1" id="button_remove" onclick="remove()">Удалить значения</button>
 	<script>
 		function calculate() {
+			console.log("document.all", document.all);
+			console.log("window.msCrypto", window.msCrypto);
 			if (!document.all && !window.msCrypto) {
 			createExplosion(event);
 			}
@@ -222,9 +224,9 @@
 				var minutes = (tProbability % hours) * 60;
 				var distance = $V_svoi * tProbability;
 				console.log("Ожидаемое время встречи с противником - ", tProbability);
-				document.getElementById("tProbability").innerHTML = `Ожидаемое время встречи с противником - <span>${hours}</span> час. <span>${Math.round(minutes)}</span> мин`;
+				document.getElementById("tProbability").innerHTML = `Ожидаемое время встречи с противником - <span>${hours}</span> час. <span id="span">${Math.round(minutes)}</span> мин`;
 				console.log("Удаление вероятного рубежа встречи с противником - ", distance);
-				document.getElementById("distance").innerHTML = `Удаление вероятного рубежа встречи с противником - <span>${Math.round(distance * 100) / 100}</span> км`;
+				document.getElementById("distance").innerHTML = `Удаление вероятного рубежа встречи с противником - <span id="span">${Math.round(distance * 100) / 100}</span> км`;
 				document.getElementById("button_remove").style.display = "block";
 			} else {
 				document.getElementById("result").innerHTML = `Для расчета необходимо ввести все значения`;
@@ -232,7 +234,7 @@
 
 		}
 		function remove() {
-			document.querySelector("span").classList.remove("span_red");
+			document.getElementById("span").className = "";
 			document.getElementById("tProbability").innerHTML = "";
 			document.getElementById("distance").innerHTML = "";
 			document.body.style.background = "";
