@@ -215,11 +215,14 @@
 			var $V_prot = parseFloat(document.getElementById("V_prot").value.replace(",", ".")) || 0;
 			var $V_svoi = parseFloat(document.getElementById("V_svoi").value.replace(",", ".")) || 0;
 			if ($D && $V_prot && $V_svoi) {
-				var tProbability = $D / ($V_svoi + $V_prot) * 60;
+				var tProbability = $D / ($V_svoi + $V_prot);
+				var hours = Math.floor(tProbability);
+				var minutes = (tProbability % hours) * 60;
 				var distance = $V_svoi * tProbability;
 				console.log("Ожидаемое время встречи с противником - ", tProbability);
-				document.getElementById("tProbability").innerHTML = `Ожидаемое время встречи с противником - <span>${Math.round(tProbability)}</span> мин`;
-				document.getElementById("distance").innerHTML = `Удаление вероятного рубежа встречи с противником - <span>${Math.round(distance)}</span> км`;
+				document.getElementById("tProbability").innerHTML = `Ожидаемое время встречи с противником - <span>${hours}</span> час. <span>${Math.round(minutes)}</span> мин`;
+				console.log("Удаление вероятного рубежа встречи с противником - ", tProbability);
+				document.getElementById("distance").innerHTML = `Удаление вероятного рубежа встречи с противником - <span>${distance}</span> км`;
 				document.getElementById("button_remove").style.display = "block";
 			} else {
 				document.getElementById("result").innerHTML = `Для расчета необходимо ввести все значения`;
