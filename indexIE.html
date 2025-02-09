@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Расчет времени</title>
+    <style>
+        body {
+            font-weight: bold;
+            font-size: 18px;
+            background-color: #e9f5e9;
+            color: #2f4f2f;
+            margin: 0;
+            padding: 20px;
+        }
+        h2, h4 {
+            color: #2f4f2f;
+            text-align: center;
+        }
+        h2 {
+            font-size: 18px;
+        }
+        h4 {
+            font-size: 14px;
+        }
+        .block-input {
+            text-align: center;
+        }
+        .input {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+        input {
+            width: 130px;
+            height: 20px;
+            font-size: 14px;
+            border: 2px solid #76b476;
+            background-color: #f0f9f0;
+            color: #2f4f2f;
+            padding: 5px;
+        }
+        button {
+            font-size: 14px;
+            padding: 10px;
+            width: 200px;
+            margin: 10px auto;
+            display: block;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #button_remove {
+            display: none;
+            background-color: #388e3c;
+        }
+        .tProbability, .distance {
+            margin: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+        p {
+            font-size: 12px;
+            text-align: center;
+        }
+        span {
+            background-color: #76b476;
+            color: white;
+            padding: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Калькулятор расчета времени встречи</h2>
+    <div class="calc-block">
+        <h4>Введите данные</h4>
+        <div class="block-input">
+            <div class="input">
+                <input type="text" id="D">
+                <label>D (км)</label>
+            </div>
+            <div class="input">
+                <input type="text" id="V_svoi">
+                <label>V<sub>своих</sub> (км/ч)</label>
+            </div>
+            <div class="input">
+                <input type="text" id="V_prot">
+                <label>V<sub>прот</sub> (км/ч)</label>
+            </div>
+        </div>
+    </div>
+    <button onclick="calculate()">Рассчитать</button>
+    <h3 id="tProbability" class="tProbability"></h3>
+    <h3 id="distance" class="distance"></h3>
+    <button id="button_remove" onclick="remove()">Удалить</button>
+
+    <script>
+        function calculate() {
+            var D = parseFloat(document.getElementById("D").value.replace(",", ".")) || 0;
+            var V_prot = parseFloat(document.getElementById("V_prot").value.replace(",", ".")) || 0;
+            var V_svoi = parseFloat(document.getElementById("V_svoi").value.replace(",", ".")) || 0;
+
+            if (D && V_prot && V_svoi) {
+                var tProbability = D / (V_svoi + V_prot);
+                var hours = Math.floor(tProbability);
+                var minutes = Math.round((tProbability - hours) * 60);
+                var distance = Math.round(V_svoi * tProbability * 100) / 100;
+
+                document.getElementById("tProbability").innerHTML =
+                    "Ожидаемое время встречи: <span>" + hours + "</span> час. <span>" + minutes + "</span> мин.";
+
+                document.getElementById("distance").innerHTML =
+                    "Удаление рубежа встречи: <span>" + distance + "</span> км.";
+
+                document.getElementById("button_remove").style.display = "block";
+            } else {
+                alert("Введите корректные значения!");
+            }
+        }
+
+        function remove() {
+            document.getElementById("tProbability").innerHTML = "";
+            document.getElementById("distance").innerHTML = "";
+            document.getElementById("D").value = "";
+            document.getElementById("V_prot").value = "";
+            document.getElementById("V_svoi").value = "";
+            document.getElementById("button_remove").style.display = "none";
+        }
+    </script>
+</body>
+</html>
