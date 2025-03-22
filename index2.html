@@ -100,7 +100,8 @@
 			background-color: #2e7d32;
 		}
 		.tProbability,
-		.distance {
+		.distance,
+		.depth {
 			margin: 1em;
 			font-size: 1.1em;
 			text-align: center;
@@ -207,6 +208,7 @@
 	<button type="button" class="button_calculate" onclick="calculate()">Рассчитать время</button>
 	<h3 id="tProbability" class="tProbability"></h3>
 	<h3 id="distance" class="distance"></h3>
+	<h3 id="depth" class="depth"></h3>
 	<button type="button" tabindex="-1" id="button_remove" onclick="remove()">Удалить значения</button>
 	<script>
 		function calculate() {
@@ -223,6 +225,7 @@
 				document.getElementById("tProbability").innerHTML = `Ожидаемое время встречи с противником - <span>${hours}</span> час. <span id="span">${Math.round(minutes)}</span> мин`;
 				console.log("Удаление вероятного рубежа встречи с противником - ", distance);
 				document.getElementById("distance").innerHTML = `Удаление вероятного рубежа встречи с противником - <span id="span">${Math.round(distance * 100) / 100}</span> км`;
+				document.getElementById("depth").innerHTML = `Противник вторгнется на территорию на глубину - <span id="span">${$D - Math.round(distance * 100) / 100}</span> км`;
 				document.getElementById("button_remove").style.display = "block";
 			} else {
 				document.getElementById("result").innerHTML = `Для расчета необходимо ввести все значения`;
